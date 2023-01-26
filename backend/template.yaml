@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: IoT Digital Signage Backend
+
+Globals:
+  Function:
+    Environment:
+      Variables:
+        LOG_LEVEL: INFO
+
+Resources:
+  ListContentsAPI:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: dev
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - GET
+
+  ListContentsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/list_contents
+      Handler: handler.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          CONTENTS_BUCKET_NAME: !Ref ContentsBucket
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref ContentsBucket
+      Events:
+        ListContentsEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ListContentsAPI
+            Path: /
+            Method: get
+            PayloadFormatVersion: "2.0"
+
+  ContentsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      BucketName: iot-digital-signage-contents
+      LifecycleConfiguration:
+        Rules:
+          - Id: Cleanup
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 90
+      VersioningConfiguration:
+        Status: Enabled
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+
+  ContentsBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: !Ref ContentsBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject
+            Effect: "Allow"
+            Principal: "*"
+            Resource: !Sub arn:aws:s3:::${ContentsBucket}/*
+
+Outputs:
+  ListContentsApiEndpoint:
+    Value: !GetAtt
+      - ListContentsAPI
+      - ApiEndpoint
+  ContentsBucketSecureUrl:
+    Value: !Join
+      - ''
+      - - 'https://'
+        - !GetAtt
+          - ContentsBucket
+          - DomainName

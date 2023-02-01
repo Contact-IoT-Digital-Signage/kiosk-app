@@ -7,48 +7,89 @@ import ContentsManager from "./components/ContentsManager.js";
 import VideoCallButton from "./components/VideoCallButton";
 
 function App() {
-  const [callStarted, setCallStarted] = useState(false);
+  const [isCallStarted, setCallStarted] = useState(false);
 
   const videoCallButtonPosition = {
     position: "absolute",
-    top: "86%",
-    left: "82%",
+    bottom: "70px",
+    right: "120px",
   };
 
   const selfViewStyle = {
     position: "absolute",
-    bottom: "0px",
-    left: "320px",
-    height: "360px",
-    width: "480px",
+    right: "0px",
+    width: "640px",
   };
 
   const selfViewHidden = {
-    visibility: "hidden"
+    visibility: "hidden",
   };
 
   const participantViewStyle = {
     position: "absolute",
     top: "0px",
-    left: "0px",
-    height: "1080px",
-    width: "1920px",
+    bottom: "0px",
+    height: "720px",
+    width: "1280px",
+    margin: "auto",
   };
 
   const participantViewHidden = {
-    visibility: "hidden"
+    visibility: "hidden",
+  };
+
+  const headerStyle = {
+    right: "80px",
+    position: "absolute",
+    color: "white",
+    fontSize: "56px",
+    fontWeight: "bold",
+    width: "480px",
+    textAlign: "center",
+  };
+
+  const connectingStyle = {
+    color: "white",
+    fontSize: "124px",
+    height: "240px",
+    position: "absolute",
+    top: "0px",
+    bottom: "0px",
+    margin: "auto",
+    left: "240px",
   };
 
   return (
     <div className="App">
       <ContentsProvider>
-        <ContentsManager />
+        {!isCallStarted ? <ContentsManager /> : <></>}
       </ContentsProvider>
+      {isCallStarted ? (
+        <div id="status-window" style={connectingStyle}>
+          Connecting...
+        </div>
+      ) : (
+        <></>
+      )}
+      {isCallStarted ? (
+        <div style={headerStyle}>Ask your questions to the stuff!</div>
+      ) : (
+        <></>
+      )}
       <div style={videoCallButtonPosition}>
-        <VideoCallButton setCallStarted={setCallStarted} />
+        <VideoCallButton
+          isCallStarted={isCallStarted}
+          setCallStarted={setCallStarted}
+        />
       </div>
-      <canvas id="participant-canvas" style={callStarted ? participantViewStyle: participantViewHidden}></canvas>
-      <video id="self-view" style={callStarted ? selfViewStyle: selfViewHidden}></video>
+      <canvas
+        id="participant-view"
+        style={isCallStarted ? participantViewStyle : participantViewHidden}
+      ></canvas>
+      <video
+        id="self-view"
+        style={isCallStarted ? selfViewStyle : selfViewHidden}
+      ></video>
     </div>
   );
 }

@@ -19,6 +19,16 @@ Resources:
         AllowMethods:
           - GET
 
+  GenerateUploadUrlAPI:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: dev
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - POST
+
   ListContentsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -40,6 +50,29 @@ Resources:
             ApiId: !Ref ListContentsAPI
             Path: /
             Method: get
+            PayloadFormatVersion: "2.0"
+
+  GenerateUploadUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/generate_upload_url
+      Handler: handler.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref ContentsBucket
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Ref ContentsBucket
+      Events:
+        CreateUploadUrl:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref GenerateUploadUrlAPI
+            Path: /
+            Method: post
             PayloadFormatVersion: "2.0"
 
   ContentsBucket:
@@ -79,6 +112,10 @@ Outputs:
   ListContentsApiEndpoint:
     Value: !GetAtt
       - ListContentsAPI
+      - ApiEndpoint
+  GenerateUploadUrlAPIEndpoint:
+    Value: !GetAtt
+      - GenerateUploadUrlAPI
       - ApiEndpoint
   ContentsBucketSecureUrl:
     Value: !Join

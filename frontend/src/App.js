@@ -5,20 +5,21 @@ import { useState } from "react";
 import { ContentsProvider } from "./context/ContentsContext.js";
 import ContentsManager from "./components/ContentsManager.js";
 import VideoCallButton from "./components/VideoCallButton";
+import Clock from "./components/Clock";
 
 function App() {
   const [isCallStarted, setCallStarted] = useState(false);
 
   const videoCallButtonPosition = {
     position: "absolute",
-    bottom: "70px",
-    right: "120px",
+    bottom: "30px",
+    right: "30px",
   };
 
   const selfViewStyle = {
     position: "absolute",
-    right: "0px",
-    width: "640px",
+    right: "5px",
+    width: "240px",
   };
 
   const selfViewHidden = {
@@ -29,8 +30,8 @@ function App() {
     position: "absolute",
     top: "0px",
     bottom: "0px",
-    height: "720px",
-    width: "1280px",
+    height: "441px",
+    width: "784px",
     margin: "auto",
   };
 
@@ -39,24 +40,48 @@ function App() {
   };
 
   const headerStyle = {
-    right: "80px",
+    right: "0px",
     position: "absolute",
     color: "white",
-    fontSize: "56px",
+    fontSize: "24px",
     fontWeight: "bold",
-    width: "480px",
+    width: "240px",
     textAlign: "center",
+    top: "80px",
+    border: "4px solid white",
+  };
+
+  const titleStyle = {
+    position: "absolute",
+    fontSize: "36px",
+    left: "0px",
+    right: "0px",
+    margin: "auto",
+    color: "white",
+    fontWeight: "bold",
+    width: "1024px",
+    textAlign: "center",
+    background: "#008803",
   };
 
   const connectingStyle = {
     color: "white",
-    fontSize: "124px",
-    height: "240px",
+    fontSize: "80px",
+    height: "120px",
     position: "absolute",
-    top: "0px",
+    top: "60px",
     bottom: "0px",
     margin: "auto",
-    left: "240px",
+    left: "360px",
+  };
+
+  const footerStyle = {
+    position: "absolute",
+    fontSize: "36px",
+    color: "white",
+    left: "330px",
+    fontWeight: "bold",
+    bottom: "15px",
   };
 
   return (
@@ -66,13 +91,28 @@ function App() {
       </ContentsProvider>
       {isCallStarted ? (
         <div id="status-window" style={connectingStyle}>
-          Connecting...
+          <div class="lds-roller">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
         </div>
       ) : (
         <></>
       )}
       {isCallStarted ? (
-        <div style={headerStyle}>Ask your questions to the stuff!</div>
+        <>
+          <div style={titleStyle}>Contact Signage Mode</div>
+          <div style={headerStyle}>Ask your questions to the stuff!</div>
+          <div style={footerStyle}>
+            <Clock />
+          </div>
+        </>
       ) : (
         <></>
       )}

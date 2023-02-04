@@ -32,8 +32,8 @@ const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
           stream.renderVideo(
             document.querySelector(PARTICIPANT_VIEW),
             payload.userId,
-            1280,
-            720,
+            960,
+            540,
             0,
             0,
             2
@@ -86,11 +86,11 @@ const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
   }, [setCallStarted]);
 
   const videoCallStartButtonStyle = {
-    fontSize: "56px",
+    fontSize: "24px",
     fontWeight: "bold",
     color: "white",
-    height: "160px",
-    width: "400px",
+    height: "60px",
+    width: "180px",
     borderRadius: "20px",
     border: "none",
     background: "#008803",
@@ -99,11 +99,11 @@ const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
   };
 
   const videoCallStopButtonStyle = {
-    fontSize: "56px",
+    fontSize: "24px",
     fontWeight: "bold",
     color: "white",
-    height: "160px",
-    width: "400px",
+    height: "60px",
+    width: "180px",
     borderRadius: "20px",
     border: "none",
     background: "#dd2a0f",

@@ -6,14 +6,17 @@ const SELF_VIEW = "#self-view";
 const PARTICIPANT_VIEW = "#participant-view";
 const STATUS_WINDOW = "#status-window";
 
+const SIGNAGE_ID = "Station001";
+const SIGNAGE_NAME = "The Earth First Station";
+
 const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
   const [zoomClient, setZoomClient] = useState();
 
   const startVideoCall = async () => {
-    // these information must be got from API
+    const date = new Date();
     const tokenJson = await activecallsApi.generateToken(
-      "Ikebukuro Station",
-      "Ike0001"
+      SIGNAGE_ID + "-" + Math.floor(date.getTime() / 1000),
+      SIGNAGE_NAME
     );
 
     try {

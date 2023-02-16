@@ -11,11 +11,14 @@ const SIGNAGE_NAME = "The Earth First Station";
 
 const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
   const [zoomClient, setZoomClient] = useState();
+  const [tpc, setTpc] = useState("");
 
   const startVideoCall = async () => {
     const date = new Date();
+    const _tpc = SIGNAGE_ID + "-" + Math.floor(date.getTime() / 1000)
+    setTpc(_tpc)
     const tokenJson = await activecallsApi.generateToken(
-      SIGNAGE_ID + "-" + Math.floor(date.getTime() / 1000),
+      _tpc,
       SIGNAGE_NAME
     );
 
@@ -30,26 +33,6 @@ const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
       stream.startVideo({
         videoElement: document.querySelector(SELF_VIEW),
       });
-      zoomClient.on("peer-video-state-change", (payload) => {
-        if (payload.action === "Start") {
-          stream.renderVideo(
-            document.querySelector(PARTICIPANT_VIEW),
-            payload.userId,
-            720,
-            540,
-            0,
-            0,
-            2
-          );
-          document.querySelector(STATUS_WINDOW).style.display = "none";
-        } else if (payload.action === "Stop") {
-          stream.stopRenderVideo(
-            document.querySelector(PARTICIPANT_VIEW),
-            payload.userId
-          );
-          document.querySelector(STATUS_WINDOW).style.display = "block";
-        }
-      });
       setCallStarted(true);
     } catch (error) {
       console.log(error);
@@ -60,6 +43,8 @@ const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
     try {
       await zoomClient.leave();
       setCallStarted(false);
+      await activecallsApi.deleteActivecalls(tpc)
+      zoomClient.off("peer-video-state-change")
     } catch (error) {
       console.log(error);
     }
@@ -81,6 +66,27 @@ const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
         );
       });
       setZoomClient(client);
+      client.on("peer-video-state-change", (payload) => {
+        const stream = client.getMediaStream();
+        if (payload.action === "Start") {
+          stream.renderVideo(
+            document.querySelector(PARTICIPANT_VIEW),
+            payload.userId,
+            720,
+            540,
+            0,
+            0,
+            2
+          );
+          document.querySelector(STATUS_WINDOW).style.display = "none";
+        } else if (payload.action === "Stop") {
+          stream.stopRenderVideo(
+            document.querySelector(PARTICIPANT_VIEW),
+            payload.userId
+          );
+          document.querySelector(STATUS_WINDOW).style.display = "block";
+        }
+      });
     };
     init();
     return async () => {

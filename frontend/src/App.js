@@ -35,9 +35,9 @@ function App() {
     margin: "auto",
   };
 
-  const participantViewHidden = {
-    visibility: "hidden",
-  };
+  // const participantViewHidden = {
+  //   visibility: "hidden",
+  // };
 
   const headerStyle = {
     right: "0px",
@@ -114,7 +114,7 @@ function App() {
           </div>
           <canvas
             id="participant-view"
-            style={isCallStarted ? participantViewStyle : participantViewHidden}
+            style={participantViewStyle}
           ></canvas>
         </>
       ) : (

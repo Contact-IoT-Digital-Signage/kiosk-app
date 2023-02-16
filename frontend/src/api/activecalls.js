@@ -22,6 +22,17 @@ const activecallsApi = {
 
     return tokenJson;
   },
+
+  deleteActivecalls: async (tpc) => {
+    const body = {
+      tpc: tpc,
+    };
+    const endpoint = API_ENDPOINT_URL + "activecall";
+    await fetch(endpoint, {
+      method: "DELETE",
+      body: JSON.stringify(body),
+    });
+  },
 };
 
 export default activecallsApi;

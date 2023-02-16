@@ -30,8 +30,8 @@ function App() {
     position: "absolute",
     top: "0px",
     bottom: "0px",
-    height: "441px",
-    width: "784px",
+    height: "405px",
+    width: "720px",
     margin: "auto",
   };
 
@@ -112,6 +112,10 @@ function App() {
           <div style={footerStyle}>
             <Clock />
           </div>
+          <canvas
+            id="participant-view"
+            style={isCallStarted ? participantViewStyle : participantViewHidden}
+          ></canvas>
         </>
       ) : (
         <></>
@@ -122,10 +126,6 @@ function App() {
           setCallStarted={setCallStarted}
         />
       </div>
-      <canvas
-        id="participant-view"
-        style={isCallStarted ? participantViewStyle : participantViewHidden}
-      ></canvas>
       <video
         id="self-view"
         style={isCallStarted ? selfViewStyle : selfViewHidden}

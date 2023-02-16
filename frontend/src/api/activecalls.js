@@ -2,7 +2,7 @@ const API_ENDPOINT_URL =
   process.env.REACT_APP_ACTIVE_CALLS_API_ENDPOINT + "/dev/";
 
 const activecallsApi = {
-  async generateToken(signageName, signageId) {
+  async generateToken(signageId, signageName) {
     // const result = await fetch(API_ENDPOINT_URL + `?prefix=${CONTENTS_FOLDER}`);
     // const jsonData = await result.json();
     const data = {

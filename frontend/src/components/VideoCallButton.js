@@ -35,7 +35,7 @@ const VideoCallButton = ({ isCallStarted, setCallStarted }) => {
           stream.renderVideo(
             document.querySelector(PARTICIPANT_VIEW),
             payload.userId,
-            960,
+            720,
             540,
             0,
             0,
